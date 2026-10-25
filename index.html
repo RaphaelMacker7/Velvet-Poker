@@ -334,6 +334,5 @@ let fonts=0,peerOk=0,done=0;const t0=performance.now(),chk=()=>{if(typeof Peer!=
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(()=>fonts=1);
 const steps=['Mélange du paquet…','Pose des jetons…','Préparation de la table…'];
 const tick=now=>{const t=now-t0;chk();const ready=(fonts&&peerOk)||t>5000,p=Math.min(t/2400,ready?1:.88);$('#spi').style.width=p*100+'%';$('#spt').textContent=steps[Math.min(2,p*3|0)];
-if(p>=1){el.classList.add('rdy');$('#spt').textContent='Touchez pour commencer';done=1;return}requestAnimationFrame(tick)};requestAnimationFrame(tick);
-el.addEventListener('click',()=>{if(!done)return;el.classList.add('out');setTimeout(()=>el.remove(),700)})})();
+if(p>=1){$('#spt').textContent='Prêt';setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),700)},350);return}requestAnimationFrame(tick)};requestAnimationFrame(tick);})();
 </script></body></html>
