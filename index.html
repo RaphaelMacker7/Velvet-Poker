@@ -71,6 +71,15 @@ button.g{background:#1a2125;color:var(--tx);border:1px solid #2d383d;box-shadow:
 .cta{width:100%;margin-top:16px;height:54px;font-size:15px;letter-spacing:.1em;text-transform:uppercase;position:relative;overflow:hidden}.cta:after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,#fff9,transparent);transform:skewX(-20deg);animation:gl 3.6s ease-in-out infinite}@keyframes gl{55%,100%{left:140%}}
 .hint{text-align:center;color:var(--mu);font-size:13px;margin-bottom:12px}.pinin{font:700 34px 'Cormorant Garamond',Georgia,serif;letter-spacing:.5em;text-indent:.5em;text-align:center;color:var(--gold2);padding:14px 0;margin:0}.pinin::placeholder{color:#97a3a955}
 .ft{text-align:center;color:#97a3a99a;font-size:12px;margin-top:14px;letter-spacing:.06em}
+
+body.game{position:fixed;inset:0;width:100%;height:100dvh;overflow:hidden}
+body.game #app{display:flex;flex-direction:column;height:100%}
+body.game #hud{flex:none;padding:calc(16px + env(safe-area-inset-top,0px)) 56px 0}
+body.game #tb{flex:1 1 0;min-height:230px;max-height:620px;aspect-ratio:auto;margin:30px auto 0;width:100%;align-self:center}
+body.game #dock{flex:none}
+body.game #ctl{flex:none;position:relative;width:100%;min-height:84px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+body.game .rp{position:absolute;left:14px;right:14px;bottom:calc(100% + 104px);margin:0;z-index:9;background:#0b1013f2;backdrop-filter:blur(10px);box-shadow:0 14px 40px #000d}
+body.game .st{margin:10px 0}body.game .cf{height:46px}
 </style></head><body><button id="mu" class="g">♪</button><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -139,7 +148,7 @@ const sc=el.map(p=>({p,v:live.length>1?best(p.cards,s.board,s.var):0})),top=Math
 s.res=s.pl.filter(p=>p.win>0).map(p=>p.name+' remporte '+p.win+(live.length>1?' ('+HN[hn[p.id]]+')':''));s.snd='win'}
 /* ---- réseau PeerJS : l’hôte est le serveur, chaque joueur ne reçoit que ses cartes ---- */
 const PC={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:openrelay.metered.ca:80'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}};
-const view=h=>$('#app').innerHTML=h;
+const view=(h,g)=>{document.body.classList.toggle('game',!!g);$('#app').innerHTML=h};
 function pub(s,id){const c=JSON.parse(JSON.stringify(s));delete c.deck;c.tl=s.turn>=0&&s.pl[s.turn]&&s.pl[s.turn].gone?15:45;const sh=s.stage=='show'&&s.pl.filter(p=>!p.fold&&!p.out).length>1;c.me=s.pl.findIndex(p=>p.id==id);c.pl.forEach((p,i)=>{if(p.id!=id&&!(sh&&!p.fold))p.cards=p.cards.map(()=>-1);p.id=i});return c}
 const opt={vr:'holdem',bl:10,sk:1000,lv:10};let tabJ=false;
 const OPTS={vr:[['holdem','Hold’em'],['omaha','Omaha']],bl:[[10,'10 / 20'],[25,'25 / 50'],[50,'50 / 100']],sk:[[1000,'1 000'],[2000,'2 000'],[5000,'5 000']],lv:[[5,'5'],[10,'10'],[20,'20'],[0,'Fixes']]},LB={vr:'Variante',bl:'Blinds de départ',sk:'Tapis de départ',lv:'Blinds ↑ toutes les … mains'};
@@ -222,7 +231,7 @@ ctl+=`<div class="act"><button class="r" id="fo">Se coucher</button><button clas
 else ctl+=`<div class="info">${s.stage=='wait'?'En attente de la reconnexion d’un joueur…':sh?'Main suivante dans un instant…':s.turn>=0?'Au tour de '+esc(s.pl[s.turn].name):''}</div>`;
 view(`<div id="hud"><span>Main <b>${s.hand}</b></span><span>Blinds <b>${s.sb}/${s.bb}</b>${s.up?' ↑':''}</span><span><b>${s.var=='omaha'?'Omaha':'Hold’em'}</b></span></div>
 <div id="tb"><div class="rail"></div><div class="felt"></div><div class="ctr"><div class="pr"><div class="deck" id="dk"><div class="c bk"></div><div class="c bk"></div><div class="c bk"></div></div><div class="pot"><i class="chip"></i>POT ${fmt(pot)}</div></div><div class="brd">${s.board.map((c,i)=>cd(c,s.hand+'-b'+i,1,1000+i)).join('')}</div></div>${bets}${seats}${gh}</div>
-${dock}<div id="ctl">${ctl}</div>`);
+${dock}<div id="ctl">${ctl}</div>`,1);
 const go=(t,a)=>isHost?hostAct('host',t,a):hostConn.send({t:'act',a:t,amt:a});
 if($('#fo')){$('#fo').onclick=()=>go('fold');$('#ca').onclick=()=>go('call');const rg=$('#rg');if(rg){const up=()=>$('#rb').textContent=+rg.value==+rg.max?'Tapis '+fmt(+rg.value):'Relancer à '+fmt(+rg.value),stp=d=>{rg.value=Math.min(+rg.max,Math.max(+rg.min,+rg.value+d*(+rg.step)));up()};rg.oninput=up;$('#rz').onclick=()=>$('#rp').classList.toggle('o');$('#mi').onclick=()=>stp(-1);$('#pu').onclick=()=>stp(1);$('#rb').onclick=()=>go('raise',+rg.value);document.querySelectorAll('.qs button').forEach(b=>b.onclick=()=>{rg.value=b.dataset.v;up()})}}
 if($('#mn'))$('#mn').onclick=()=>location.reload();
