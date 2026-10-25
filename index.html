@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 :root{--bg:#07090b;--line:#262f34;--tx:#f5f3ec;--mu:#97a3a9;--gold:#d8b46a;--gold2:#f3dca0;--red:#e0564f;--grn:#4fd08a;color-scheme:dark}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:pan-x pan-y}html,body{overscroll-behavior:none;overflow-x:hidden;-webkit-text-size-adjust:100%}html,body{margin:0;min-height:100%;color:var(--tx);font:500 15px/1.35 Outfit,system-ui,sans-serif;background:radial-gradient(90% 55% at 50% 24%,#183428 0%,#0b1412 52%,#050708 100%) fixed;user-select:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:pan-x pan-y}html,body{overscroll-behavior:none;overflow-x:hidden;-webkit-text-size-adjust:100%}html,body{margin:0;min-height:100%;color:var(--tx);font:500 15px/1.35 Outfit,system-ui,sans-serif;background:radial-gradient(90% 55% at 50% 24%,#183428 0%,#0b1412 52%,#050708 100%);user-select:none}
 .hero{position:fixed;inset:0;overflow:hidden;pointer-events:none}.fs{position:absolute;font-size:64px;color:#d8b46a14;animation:fl 9s ease-in-out infinite}.fs.r{color:#e0564f12}@keyframes fl{50%{transform:translateY(-26px) rotate(8deg)}}
 .wrap{position:relative;max-width:440px;margin:0 auto;padding:30px 18px 40px}.mk{width:54px;height:54px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;font-size:28px;color:#1a1405;background:linear-gradient(160deg,var(--gold2),var(--gold));box-shadow:0 0 34px #d8b46a66}
 .logo{font:700 40px 'Cormorant Garamond',Georgia,serif;letter-spacing:.2em;text-align:center;background:linear-gradient(180deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05}.logo small{display:block;font:700 15px Outfit;letter-spacing:.7em;margin-top:2px;text-indent:.7em}
@@ -138,6 +138,22 @@ body.game .rp{bottom:calc(100% + 56px)}
 .wn{padding:18px 18px 12px 12px}
 .wns.m .wn{padding:8px 14px 8px 10px;gap:10px}.wns.m .wn .av{width:34px;height:34px;font-size:15px}.wns.m .cr,.wns.m .wt em,.wns.m .wt .hp{display:none}.wns.m .wt b{font-size:16px}.wns.m .wa{font-size:22px}
 #mn{height:44px!important}
+html{height:100%;background-color:#050708}
+/* hauteurs fixes : la table garde sa forme */
+#dock{height:92px;flex:none}.pills{flex-wrap:nowrap;height:24px;min-height:0;overflow:hidden}
+/* showdown : cartes des adversaires lisibles à leur place */
+.s.rv{z-index:7}.s.rv .hc{transform:scale(1.55);transform-origin:50% 100%;margin-bottom:9px}.s.rv .hc.q{transform:scale(1.1)}
+.s.rv.w .c{box-shadow:0 0 0 2px var(--gold),0 0 14px #d8b46acc}
+.al.hl{background:#1c2327;color:var(--gold2);border:1px solid #d8b46a66}.al.hl.wl{background:var(--gold);color:#1a1405;border-color:var(--gold)}
+/* perf : animations sur transform/opacité uniquement, ombres moins floues */
+.tb{width:100%;transform-origin:0 50%}@keyframes tb{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.s.t .pb,.hbox.t{animation:none;border-color:var(--gold);box-shadow:0 0 20px #d8b46a88}
+.s.t .pb:before,.hbox.t:before{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 16px #d8b46acc;opacity:0;animation:plo 1.2s ease-in-out infinite;pointer-events:none}@keyframes plo{50%{opacity:1}}
+.wn{animation:wnin .6s cubic-bezier(.2,1.2,.4,1) both}
+body.game .rp{backdrop-filter:none;background:#0b1013}
+.c.deal{will-change:transform,opacity}
+.rail{box-shadow:0 0 0 3px #2b1a0d,0 0 0 4px #7a5a33,0 18px 30px #000c,inset 0 3px 4px #ffffff30,inset 0 -8px 14px #000b}
+.felt{box-shadow:inset 0 0 34px #000c,inset 0 6px 14px #0008,inset 0 0 0 2px #00000066}
 </style></head><body><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -185,7 +201,7 @@ const win=()=>mk(1.2,x=>{sl(x,0,.35,1500,3000,.3);cs(x,.04,20,.8,.04);cs(x,.45,1
 const turn=()=>mk(.7,x=>{[[784,0,.16],[1047,.13,.3]].forEach(([f,t0,tau])=>{const i0=t0*sr|0;for(let i=0;i+i0<x.length;i++){const t=i/sr;x[i0+i]+=Math.sin(TP*f*t)*Math.exp(-t/tau)*Math.min(1,t/.004)}})});
 
 const rp=(f,n)=>Array.from({length:n},f);
-SB={deal:rp(deal,4),flip:rp(flip,2),rev:rp(rev,2),call:rp(call,3),raise:rp(raise,2),allin:[allin()],check:rp(check,2),fold:rp(fold,2),win:[win()],turn:[turn()]};
+SB={};[['deal',()=>rp(deal,4)],['flip',()=>rp(flip,2)],['call',()=>rp(call,3)],['fold',()=>rp(fold,2)],['check',()=>rp(check,2)],['raise',()=>rp(raise,2)],['rev',()=>rp(rev,2)],['turn',()=>[turn()]],['allin',()=>[allin()]],['win',()=>[win()]]].forEach(([k,fn],i)=>setTimeout(()=>{SB[k]=fn()},i*45));
 mx=ac.createGain();const cp=ac.createDynamicsCompressor();mx.connect(cp);cp.connect(ac.destination);
 const n=sr*.3|0,ir=ac.createBuffer(2,n,sr);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<n;i++)d[i]=(R()*2-1)*Math.pow(1-i/n,3)}
 const cv=ac.createConvolver();cv.buffer=ir;rv=ac.createGain();rv.gain.value=.16;rv.connect(cv);cv.connect(mx)}
@@ -309,13 +325,13 @@ s.pl.forEach((p,j)=>{if(p.bet){const[bx,by]=bp(j);bets+=`<div class="bt${nw('b'+
 if(fr&&P.stage!=s.stage&&P.stage!='show')P.pl.forEach((p,j)=>{if(p.bet>0&&s.pl[j].bet==0){const[bx,by]=bp(j);gh+=`<i class="gc" style="--x1:${bx}%;--y1:${by}%;--x2:50%;--y2:47%"></i>`}});
 if(sh&&(!P||P.stage!='show'))s.pl.forEach((p,j)=>{if(p.win>0){const[x,y]=pos(j,m,n);for(let k=0;k<5;k++)gh+=`<i class="gc w" style="--x1:50%;--y1:47%;--x2:${x}%;--y2:${y}%;animation-delay:${.5+k*.09}s"></i>`}});
 const ord=j=>(j-s.dealer-1+n)%n;
-const lay=sh&&s.pl.filter(p=>!p.fold&&!p.out).length>1;
+const lay=sh&&s.pl.filter(p=>!p.fold&&!p.out).length>1;const hl=j=>{const p=s.pl[j];return lay&&!p.fold&&!p.out&&p.cards.length&&p.cards[0]>=0?HN[Math.floor(best(p.cards,s.board,s.var)/759375)]:''};
 if(sh&&!me.out&&nw('st'+pin+s.hand)){bump('h');if(me.win>0){bump('w');bump('b',me.win)}}
 if(s.over&&nw('go'+pin)){bump('gp');if(!me.out)bump('g')}
 if(fr)s.pl.forEach((p,j)=>{const q=P.pl[j];if(q&&p.fold&&!q.fold&&!p.out&&!q.out&&!q.gone){const[x,y]=pos(j,m,n);gh+=`<div class="gk" style="--x1:${x}%;--y1:${y}%;--x2:50%;--y2:47%;--r:${(j%2?1:-1)*(25+j*7)}deg"><i class="c bk"></i><i class="c bk"></i></div>`}});
-const tc=lay?s.pl.map((p,j)=>{if(p.fold||p.out||!p.cards.length||p.cards[0]<0)return'';const[x,y]=pos(j,m,n),f=nw('sc'+s.hand+j);return`<div class="sc${p.win>0?' w':' l'}${f?' in':''}" data-j="${j}" style="left:${x+(50-x)*.5}%;top:${y+(50-y)*.5}%;--d:${j*.12}s">${p.cards.map(c=>card(c)).join('')}</div>`}).join(''):'';
+const tc='';
 const seats=s.pl.map((p,j)=>{if(j==m)return'';const[x,y]=pos(j,m,n);
-return`<div class="s${p.fold||p.out||p.gone?' f':''}${p.win>0?' w':''}${s.turn==j&&!s.over?' t':''}" data-j="${j}" style="left:${x}%;top:${y}%"><div class="hc"${lay?' style="visibility:hidden"':''}>${p.cards.map((c,i)=>cd(c,s.hand+'-'+j+'-'+i,0,i*n+ord(j))).join('')}</div><div class="pb"><div class="av" style="--h:${hue(p.name)}">${ini(p.name)}${dd(j)}</div><div class="pi"><div class="nm">${esc(p.name)}</div><div class="ch">${stack(p)}</div></div>${tbr(j)}</div>${p.al&&!sh?`<div class="al${nw('a'+s.hand+s.stage+j+p.al)?' pop':''}">${fl(p.al)}</div>`:''}${p.win>0?`<div class="fl">+${fmt(p.win)}</div>`:''}</div>`}).join('');
+return`<div class="s${p.fold||p.out||p.gone?' f':''}${p.win>0?' w':''}${s.turn==j&&!s.over?' t':''}${lay&&!p.fold&&!p.out&&p.cards.length&&p.cards[0]>=0?' rv':''}" data-j="${j}" style="left:${x}%;top:${y}%"><div class="hc${p.cards.length>2?' q':''}">${p.cards.map((c,i)=>cd(c,s.hand+'-'+j+'-'+i,0,i*n+ord(j))).join('')}</div><div class="pb"><div class="av" style="--h:${hue(p.name)}">${ini(p.name)}${dd(j)}</div><div class="pi"><div class="nm">${esc(p.name)}</div><div class="ch">${stack(p)}</div></div>${tbr(j)}</div>${sh?(hl(j)?`<div class="al hl${p.win>0?' wl':''}">${hl(j)}</div>`:''):(p.al?`<div class="al${nw('a'+s.hand+s.stage+j+p.al)?' pop':''}">${fl(p.al)}</div>`:'')}${p.win>0?`<div class="fl">+${fmt(p.win)}</div>`:''}</div>`}).join('');
 const hn=me.cards.length&&me.cards[0]>=0&&!me.fold&&s.board.length>=3?HN[Math.floor(best(me.cards,s.board,s.var)/759375)]:'';
 const dock=`<div id="dock" class="${me.fold||me.out?'f':''}"><div class="hc">${me.cards.map((c,i)=>cd(c,s.hand+'-'+m+'-'+i,0,i*n+ord(m))).join('')}</div><div class="hside"><div class="hbox${s.turn==m&&!s.over?' t':''}${me.win>0?' w':''}"><div class="av" style="--h:${hue(me.name)}">${ini(me.name)}${dd(m)}</div><div><div class="nm">${esc(me.name)}</div><div class="ch">${stack(me)}</div></div>${tbr(m)}</div><div class="pills">${hn?`<span class="pill">${hn}</span>`:''}${me.al&&!sh?`<span class="pill a">${fl(me.al)}</span>`:''}${me.win>0?`<span class="pill a">+${fmt(me.win)}</span>`:''}</div></div></div>`;
 let ctl=s.res&&!s.over?`<div class="wns${s.res.length>1?' m':''}">${s.res.map(t=>{const k=/^(.*) remporte (\d+)(?: \((.*)\))?$/.exec(t);if(!k)return'';const you=k[1]==me.name;return`<div class="wn${you?' you':''}"><div class="wav"><i class="cr">♛</i><div class="av" style="--h:${hue(k[1])}">${ini(k[1])}</div></div><div class="wt"><em>${you?'Vous remportez le pot':'Gagnant'}</em><b>${esc(k[1])}</b><span class="hp">${esc(k[3]||'Tous les autres se sont couchés')}</span></div><div class="wa"><i class="chip"></i><b data-v="${k[2]}">+${fmt(+k[2])}</b></div><i class="tb" style="animation-duration:7s"></i></div>`}).join('')}</div>`:'';
@@ -325,7 +341,7 @@ ctl+=`<div class="act"><button class="r" id="fo">Se coucher</button><button clas
 else if(s.turn>=0&&!sh&&s.stage!='wait'){const q=s.pl[s.turn];ctl+=`<div class="tp"><div class="av" style="--h:${hue(q.name)}">${ini(q.name)}</div><div class="tt"><span>Au tour de</span><b>${esc(q.name)}</b></div><span class="dots"><u></u><u></u><u></u></span>${tbr(s.turn)}</div>`}
 else ctl+=`<div class="info">${s.stage=='wait'?'En attente de la reconnexion d’un joueur…':''}</div>`;
 view(`<div id="hud"><span>Main <b>${s.hand}</b></span><span>Blinds <b>${s.sb}/${s.bb}</b>${s.up?' ↑':''}</span><span><b>${s.var=='omaha'?'Omaha':'Hold’em'}</b></span></div>
-<div id="tb"><div class="rail"></div><div class="felt"><div class="lg"><span class="lm">♠</span><b>VELVET</b><span class="ln"><i></i><em>POKER</em><i></i></span></div></div><div class="ctr"><div class="pr"><div class="deck" id="dk"><div class="c bk"></div><div class="c bk"></div><div class="c bk"></div></div><div class="pot"><i class="chip"></i>POT ${fmt(pot)}</div></div><div class="brd">${s.board.map((c,i)=>cd(c,s.hand+'-b'+i,1,1000+i)).join('')}</div></div>${bets}${seats}${tc}${gh}</div>
+<div id="tb"><div class="rail"></div><div class="felt"><div class="lg"><span class="lm">♠</span><b>VELVET</b><span class="ln"><i></i><em>POKER</em><i></i></span></div></div><div class="ctr"><div class="pr"><div class="deck" id="dk"><div class="c bk"></div><div class="c bk"></div><div class="c bk"></div></div><div class="pot"><i class="chip"></i>POT ${fmt(pot)}</div></div><div class="brd">${s.board.map((c,i)=>cd(c,s.hand+'-b'+i,1,1000+i)).join('')}</div></div>${bets}${seats}${gh}</div>
 ${dock}<div id="ctl">${ctl}</div>`,1);
 document.querySelectorAll('.wa b[data-v]').forEach(e=>{const v=+e.dataset.v;if(!nw('cu'+pin+s.hand+v))return;e.textContent='+0';const t0=performance.now(),f=t=>{const p=Math.min(1,(t-t0)/900);e.textContent='+'+fmt(Math.round(v*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)});
 const go=(t,a)=>isHost?hostAct('host',t,a):hostConn.send({t:'act',a:t,amt:a});
