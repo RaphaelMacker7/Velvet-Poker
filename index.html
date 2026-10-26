@@ -266,6 +266,15 @@ body.ent .db{animation:dbp .6s cubic-bezier(.2,1.8,.4,1) 1.15s backwards}@keyfra
 #ctl .rp .rg::-moz-range-track{height:8px;border-radius:6px;background:#3b4147}
 #ctl .rp .rg::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-9px;border:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#fff,#d6d9dc);box-shadow:0 2px 6px #000a}
 #ctl .rp .rg::-moz-range-thumb{width:26px;height:26px;border:0;border-radius:50%;background:#e8eaec;box-shadow:0 2px 6px #000a}
+/* ---- effet verre : transparence, reflet et lueur (sans backdrop-filter) ---- */
+#ctl .bx{background:linear-gradient(180deg,#ffffff0d,#ffffff03),#14181cd9;border:1px solid #ffffff2b;box-shadow:0 10px 28px #000b,inset 0 1px 0 #ffffff26}
+#ctl .rp{background:linear-gradient(180deg,#ffffff0f,#ffffff04),#12161a;border:1px solid #ffffff2b;box-shadow:0 14px 36px #000c,inset 0 1px 0 #ffffff26}
+#ctl .bx button,#ctl .rp #rb{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(180deg,#f0535ac7 0%,#c92b33a6 52%,#8f1820b8 100%);border:1px solid #ff8a8f59;box-shadow:inset 0 1px 0 #ffffff59,inset 0 -2px 0 #00000052,inset 0 0 14px #ff5a6038,0 0 16px #e03a4040,0 3px 8px #0008}
+#ctl .bx button:before,#ctl .rp #rb:before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:52%;background:linear-gradient(180deg,#ffffff4d,#ffffff0a);border-radius:inherit;pointer-events:none}
+#ctl .bx button:after,#ctl .rp #rb:after{content:'';position:absolute;z-index:-1;left:12%;right:12%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#ffb3b680,transparent);pointer-events:none}
+#ctl .rp .qs button,#ctl .rp .st .sp{background:linear-gradient(180deg,#ffffff1f,#ffffff0a);border:1px solid #ffffff2e;box-shadow:inset 0 1px 0 #ffffff33,0 2px 6px #0006}
+#ctl .bx button:active,#ctl .rp #rb:active{box-shadow:inset 0 1px 0 #ffffff40,inset 0 0 14px #ff5a6030,0 0 8px #e03a4030}
+#ctl .rp #rb{background:linear-gradient(180deg,#f0535af2 0%,#c92b33e6 52%,#8f1820f0 100%)}
 </style></head><body><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
