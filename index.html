@@ -262,7 +262,9 @@ let peer,conns={},hostConn,isHost=false,myId,pin,name='',cfg,lobby=[],st=null,S=
 try{visualViewport.addEventListener('resize',()=>{if(visualViewport.scale>1.01){const m=document.querySelector('meta[name=viewport]'),c=m.content;m.content=c+',shrink-to-fit=no';setTimeout(()=>m.content=c,60);scrollTo(0,scrollY)}})}catch(e){}document.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 /* ---- sons ---- */
 let ua;function silent(){const n=4000,b=new Uint8Array(44+n),v=new DataView(b.buffer),w=(o,s)=>[...s].forEach((c,i)=>b[o+i]=c.charCodeAt(0));w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
-function unlock(){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();if(navigator.audioSession)navigator.audioSession.type='playback'}if(ac.state!='running')ac.resume();if(!SB)setTimeout(()=>{if(!SB)bake()},60);loadReal();if(!ua){ua=new Audio(silent());ua.loop=true;ua.volume=.01;ua.play().catch(()=>{})}}catch(e){}}
+function keep(){if(ua)return;try{ua=new Audio(silent());ua.loop=true;ua.volume=.01;ua.play().catch(()=>{});if(navigator.mediaSession){const u=new URL('icon-512.png',location.href).href;navigator.mediaSession.metadata=new MediaMetadata({title:'Velvet Poker',artist:'Table en cours',artwork:[{src:u,sizes:'512x512',type:'image/png'}]});['seekbackward','seekforward','previoustrack','nexttrack'].forEach(a=>{try{navigator.mediaSession.setActionHandler(a,null)}catch(e){}})}}catch(e){}}
+function unkeep(){try{if(ua){ua.pause();ua.src='';ua=null}if(navigator.mediaSession)navigator.mediaSession.metadata=null}catch(e){}}
+function unlock(){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();if(navigator.audioSession)navigator.audioSession.type='playback'}if(ac.state!='running')ac.resume();if(!SB)setTimeout(()=>{if(!SB)bake()},60);loadReal();if(isHost&&st)keep();}catch(e){}}
 ['pointerdown','touchstart','click','keydown'].forEach(e=>addEventListener(e,unlock,{passive:true}));
 /* moteur audio : sons synthétisés (papier, feutre, jetons en céramique), générés une fois puis lus avec de légères variations */
 let SB,mx,rv;const VOL={deal:.55,flip:.6,rev:.5,call:.5,raise:.6,allin:.7,check:.6,fold:.55,win:.5,turn:.5};
@@ -351,7 +353,7 @@ const sto=(k,v)=>{try{localStorage[k]=v}catch(e){}};
 const ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const IC={c:ic('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'),j:ic('<path d="M10 17l5-5-5-5M15 12H3M15 4h5v16h-5"/>'),r:ic('<path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M9 9h6M9 13h6"/>'),s:ic('<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>')};
 const EX={8:[3,4,5,6,7],7:[7,20,33,46,11],6:[10,23,36,2,15],5:[13,16,19,22,24],4:[2,16,30,44,6],3:[6,19,32,39,24],2:[9,22,30,43,12],1:[8,21,27,44,11],0:[12,22,32,42,1]};
-function home(msg='',to){try{peer&&peer.destroy()}catch(e){}conns={};st=S=P=null;isHost=false;joined=false;hideRc();clearTimeout(rcT);menu(to||scr,msg)}
+function home(msg='',to){unkeep();try{peer&&peer.destroy()}catch(e){}conns={};st=S=P=null;isHost=false;joined=false;hideRc();clearTimeout(rcT);menu(to||scr,msg)}
 const bkb=t=>`<div class="nav"><button class="g" id="bk" aria-label="Retour">‹</button><h1>${t}</h1></div>`;
 const mbtn=(id,i,t,sub,p)=>`<button class="mb${p?' p':''}" id="${id}">${IC[i]}<span><b>${t}</b><small>${sub}</small></span><i>›</i></button>`;
 const sum=()=>{$('#sm').textContent=`${opt.vr=='omaha'?'Omaha':'Hold’em'} · blinds ${opt.bl}/${opt.bl*2} · tapis ${fmt(opt.sk)} · ${opt.lv?'blinds ↑ toutes les '+opt.lv+' mains':'blinds fixes'}`};
@@ -402,7 +404,7 @@ if(t=='raise'){const mx=p.bet+p.chips;a=Math.min(Math.max(+a||0,Math.min(s.cb+s.
 function push(){clearTimeout(tm);Object.entries(conns).forEach(([id,c])=>c.open&&c.send({t:'st',s:pub(st,id)}));show(pub(st,'host'));if(st.over||st.stage=='wait')return;
 if(st.stage=='show'){const h=st.hand;tm=setTimeout(()=>{if(st.hand==h){deal(st);push()}},7000)}
 else if(st.turn>=0){const p=st.pl[st.turn];tm=setTimeout(()=>hostAct(p.id,p.bet==st.cb?'call':'fold'),p.gone?15000:45000)}}
-function start(){st={var:cfg.var,lv:cfg.lv||0,sb:cfg.sb,bb:cfg.sb*2,dealer:-1,hand:0,pl:lobby.map(p=>({id:p.id,name:p.name,chips:cfg.chips,bet:0,inv:0})),last:''};deal(st);push()}
+function start(){keep();st={var:cfg.var,lv:cfg.lv||0,sb:cfg.sb,bb:cfg.sb*2,dealer:-1,hand:0,pl:lobby.map(p=>({id:p.id,name:p.name,chips:cfg.chips,bet:0,inv:0})),last:''};deal(st);push()}
 const hue=n=>{let x=0;for(const c of n)x=(x*31+c.charCodeAt(0))%360;return x},ini=n=>esc((n[0]||'?').toUpperCase());
 function lob(){view(`<div class="hero"></div><div class="wrap"><div class="mk">♠</div><div class="logo">VELVET<small>POKER</small></div>
 <div class="gl"><h2>Code PIN de la table</h2><div class="pin" id="pc">${[...pin].map(d=>`<b>${d}</b>`).join('')}</div><div class="info">Touchez pour copier · ${cfg.var=='omaha'?'Omaha':'Texas Hold’em'} · ${cfg.sb}/${cfg.sb*2}${cfg.lv?' · ↑ /'+cfg.lv+' mains':''}</div></div>
