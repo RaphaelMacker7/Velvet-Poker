@@ -1,4 +1,12 @@
 <!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"><title>Velvet Poker</title><meta name="theme-color" content="#07090b">
+<meta name="description" content="Velvet Poker : jouez au poker en ligne entre amis. Créez une table, partagez le code PIN et lancez la partie.">
+<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAuMTUiIHkxPSIwIiB4Mj0iMC44NSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Y4ZThiNiIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNkOGI0NmEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhNDdhMzQiLz48L2xpbmVhckdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii4zIiByPSIuODUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFiNGQzOSIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiMwYjIxMTgiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwNTBiMDgiLz48L3JhZGlhbEdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTE2IiBmaWxsPSJ1cmwoI2IpIi8+CjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYzIDYwKSBzY2FsZSgzLjg2KSIgZmlsbD0idXJsKCNnKSIgZD0iTTUwIDVDNTAgNSA2IDM4IDYgNjJjMCAxNSAxNSAyNCAzMCAxNyA0LTIgNy01IDktOS0xIDExLTUgMTktMTMgMjVoMzZjLTgtNi0xMi0xNC0xMy0yNSAyIDQgNSA3IDkgOSAxNSA3IDMwLTIgMzAtMTdDOTQgMzggNTAgNSA1MCA1eiIvPgo8L3N2Zz4K">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="48x48" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Velvet Poker">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
@@ -230,6 +238,18 @@ body.fm .menu .scr>#m1{animation-delay:.12s;animation-duration:.45s}body.fm .men
 .lpb{width:170px;height:3px;border-radius:3px;background:#ffffff1c;overflow:hidden;margin-top:12px;animation:up .5s ease-out 1.3s both}
 .lpb i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:transform .85s linear 1.3s}
 .lst{font:600 12px Outfit;letter-spacing:.14em;color:var(--mu);animation:up .5s ease-out 1.3s both}
+/* ===== entrée à la table (après l'écran de lancement) ===== */
+body.ent #tb:before{content:'';position:absolute;inset:-6% -10%;background:radial-gradient(closest-side,#d8b46a55,transparent 72%);opacity:0;animation:tgl 1.5s ease-out .1s;pointer-events:none}@keyframes tgl{35%{opacity:1}to{opacity:0}}
+body.ent .rail,body.ent .felt{transform-origin:50% 100%;animation:tin 1.15s cubic-bezier(.2,.85,.25,1) backwards}body.ent .felt{animation-delay:.06s}
+@keyframes tin{from{opacity:0;transform:perspective(900px) rotateX(42deg) translateY(60px) scale(.8)}}
+body.ent .s{animation:sin .55s cubic-bezier(.2,1.5,.4,1) calc(.45s + var(--k,0)*.07s) backwards}@keyframes sin{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}}
+body.ent #dock{animation:din .7s cubic-bezier(.2,1,.3,1) .9s backwards}@keyframes din{from{opacity:0;transform:translateY(46px)}}
+body.ent .ctr{animation:oin .7s ease-out .8s backwards}body.ent #ctl{animation:oin .6s ease-out 1.3s backwards}@keyframes oin{from{opacity:0}}
+body.ent #hud{animation:hin .7s cubic-bezier(.2,1,.3,1) .5s backwards}@keyframes hin{from{opacity:0;transform:translateY(-14px)}}
+body.ent .db{animation:dbp .6s cubic-bezier(.2,1.8,.4,1) 1.15s backwards}@keyframes dbp{from{transform:scale(0) rotate(-180deg);opacity:0}}
+.menu .scr>#m1{margin-top:38px}
+/* onglets du menu : le contenu défile jusqu'au bout, au-dessus de la barre du bas */
+.menu.wt{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
 </style></head><body><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -340,7 +360,6 @@ const ttl=t=>`<div class="nav"><h1>${t}</h1></div>`,TABS=[['main','h','Salon'],[
 function menu(sc,msg=''){scr=sc;const er=`<div class="err" id="er" style="text-align:center;margin-top:10px">${msg}</div>`,tab=TABS.some(t=>t[0]==sc);let h='';
 if(sc=='main')h=`<div class="top"><button class="chp" id="me"><div class="av" style="--h:${hue(name||'?')}">${ini(name||'?')}</div><span>${name?esc(name):'Choisir un pseudo'}</span></button></div>
 <div class="hero2"><div class="spot"></div>${Array.from({length:16},(_,i)=>`<i class="dst" style="left:${6+i*5.7%88}%;--s:${3+i%3*1.5}px;--t:${5+i%4*1.3}s;--d:${(i*.83)%5+1.6}s;--x:${(i%5-2)*9}px"></i>`).join('')}<i class="chip hc1"></i><i class="chip hc2"></i><i class="chip hc3"></i><div class="cf5">${[8,9,10,11,12].map((c,i)=>`<div class="c5" style="--r:${(i-2)*11}deg;--i:${i}">${card(c)}</div>`).join('')}</div><div class="logo lt">${[...'VELVET'].map((c,i)=>`<span style="--i:${i}">${c}</span>`).join('')}<small>${[...'POKER'].map((c,i)=>`<span style="--i:${i+3}">${c}</span>`).join('')}</small></div></div>
-<div class="feat">${['Hold’em','Omaha','2 à 10 joueurs','Sans compte'].map((t,i)=>`<span style="--i:${i}">${t}</span>`).join('')}</div>
 <button class="mb p big" id="m1">${IC.c}<span><b>Créer une table</b><small>Invitez vos amis avec un code</small></span><i>›</i></button>
 <button class="mb" id="m2" style="margin-top:11px">${IC.j}<span><b>Rejoindre une table</b><small>Saisissez le code à 6 chiffres</small></span><i>›</i></button>${er}`;
 else if(sc=='profile'){const o=ST(),hp=o.h||0,w=o.w||0;h=`${ttl('Profil')}<div class="pf"><div class="av" id="pv" style="--h:${hue(name||'?')}">${ini(name||'?')}</div><input id="nm" maxlength="14" placeholder="Votre pseudo" autocomplete="off" value="${esc(name)}"><small>Visible par les autres joueurs à la table</small></div>${er}<div class="stg">${[[hp,'Mains jouées'],[w,'Mains gagnées'],[hp?Math.round(w/hp*100)+' %':'–','Réussite'],[fmt(o.b||0),'Plus gros pot'],[o.gp||0,'Parties jouées'],[o.g||0,'Parties gagnées']].map(([v,l])=>`<div class="stt"><b>${v}</b><span>${l}</span></div>`).join('')}</div><div class="ft">Statistiques enregistrées sur cet appareil</div>`}
@@ -424,14 +443,14 @@ else if(t=='win'){const to=seat(q[1]),f=pc();if(to)for(let i=0;i<10;i++)fly(CH()
 else if(t=='fold'){const r=hand(q[1]);if(r)for(let i=0;i<2;i++)fly(card(-1),cen(r),dc,28,{d:520,dl:i*50,s0:1,spin:rnd(-10,10),rot:rnd(-40,40)*(i?1:-1),lift:14,es:.55,fade:1})}});
 document.querySelectorAll('.s.rv').forEach(e=>{if(nw('rv'+pin+s.hand+e.dataset.j))e.classList.add('rvg')})}
 /* ---- petit écran de chargement au lancement d'une partie ---- */
-let LD=0,PEND=null;
+let LD=0,PEND=null,ENT=0;
 function launch(cb){snd('shuffle');const s=PEND||{pl:[]},pl=s.pl,el=document.createElement('div');el.id='ln';
 el.innerHTML=`<div class="lc l"></div><div class="lc r"></div><div class="lz"><div class="lem"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/></svg><b>♠</b></div><div class="lnm">VELVET POKER</div><div class="ltt">La partie commence</div><div class="lav">${pl.map((p,i)=>`<div style="--i:${i}"><span class="av" style="--h:${hue(p.name)}">${ini(p.name)}</span><small>${esc(p.name)}</small></div>`).join('')}</div><div class="lin">${pl.length} joueurs · ${s.var=='omaha'?'Omaha':'Hold’em'} · Blinds ${s.sb}/${s.bb}</div><div class="lpb"><i></i></div><div class="lst" id="ldt">Mélange du paquet…</div></div>`;
 document.body.appendChild(el);
 requestAnimationFrame(()=>requestAnimationFrame(()=>{const i=el.querySelector('.lpb i');if(i)i.style.transform='scaleX(1)'}));
 setTimeout(()=>snd('turn'),650);setTimeout(()=>{const t=$('#ldt');if(t)t.textContent='Distribution des cartes…'},1550);
 setTimeout(()=>{el.classList.add('open');snd('flip')},2150);setTimeout(cb,2250);setTimeout(()=>el.remove(),3100)}
-function show(s){if(!S&&!s.over){PEND=s;if(!LD){LD=1;launch(()=>{LD=0;const x=PEND;PEND=null;P=S;S=x;tAt=Date.now();table()})}return}if(LD){PEND=s;return}P=S;S=s;tAt=Date.now();table()}
+function show(s){if(!S&&!s.over){PEND=s;if(!LD){LD=1;launch(()=>{LD=0;const x=PEND;PEND=null;P=S;S=x;tAt=Date.now();ENT=1500;document.body.classList.add('ent');setTimeout(()=>document.body.classList.remove('ent'),1900);snd('rev');table()})}return}if(LD){PEND=s;return}P=S;S=s;tAt=Date.now();table()}
 function table(){FQ.length=0;const SW=P&&P.hand!=S.hand?[...document.querySelectorAll('.brd .c,.s .hc .c,#dock .hc .c')].map(e=>({h:e.outerHTML.replace(/ (rev|deal|ph)\b/g,''),r:e.getBoundingClientRect()})):[];const ro=$('#rp')&&$('#rp').classList.contains('o'),rv=$('#rg')&&$('#rg').value,s=S,n=s.pl.length,m=Math.max(0,s.me|0),me=s.pl[m],sh=s.stage=='show',my=s.turn==m&&!sh&&!s.over,pot=s.pl.reduce((a,p)=>a+p.inv,0),fr=P&&P.hand==s.hand,bp=j=>{const[x,y]=pos(j,m,n),k=j==m?.3:.46;return[x+(50-x)*k,y+(50-y)*k]};
 let bets='',gh='';const stack=p=>p.out?'Éliminé':p.gone?'Déconnecté':p.allin?'TAPIS':fmt(p.chips),dd=j=>s.dealer==j?'<b class="db">D</b>':'',tbr=j=>s.turn==j&&!s.over?`<i class="tb" style="animation-duration:${S.tl}s"></i>`:'';
 s.pl.forEach((p,j)=>{if(p.bet){const[bx,by]=bp(j),kb='b'+s.hand+s.stage+j+p.bet,dl=p.bet-(fr&&P.stage==s.stage&&P.pl[j]?P.pl[j].bet:0);if(nw(kb)){FL.set(kb,performance.now()+800);FQ.push(['bet',kb,j,dl])}bets+=`<div data-k="${kb}" class="bt${FL.get(kb)>performance.now()?' ph':''}" style="left:${bx}%;top:${by}%"><i class="chip"></i>${fmt(p.bet)}</div>`}});
@@ -463,7 +482,7 @@ if($('#fo')){$('#fo').onclick=()=>go('fold');$('#ca').onclick=()=>go('call');con
 if($('#mn'))$('#mn').onclick=()=>{try{sessionStorage.vpk=1}catch(e){}location.reload()};
 if(ro&&P&&P.hand==s.hand&&P.stage==s.stage&&P.turn==s.turn&&$('#rp')){const q=$('#rp');q.classList.add('o');q.style.animation='none';const g=$('#rg');if(rv&&+rv>=+g.min&&+rv<=+g.max){g.value=rv;g.oninput()}}
 document.querySelectorAll('.sc.in').forEach(e=>{const j=+e.dataset.j,src=j==m?$('#dock .hc'):document.querySelector('.s[data-j="'+j+'"] .hc');if(!src)return;const a=src.getBoundingClientRect(),b=e.getBoundingClientRect();e.style.setProperty('--dx',a.left+a.width/2-b.left-b.width/2+'px');e.style.setProperty('--dy',a.top+a.height/2-b.top-b.height/2+'px')});
-runFX(m,s,SW);
+{const en=ENT;ENT=0;if(en){document.querySelectorAll('.s').forEach((e,i)=>e.style.setProperty('--k',i));setTimeout(()=>runFX(m,s,SW),en)}else runFX(m,s,SW)}
 if(document.querySelector('.c.rev'))snd('rev');
 if(P&&P.n!=s.n&&s.snd){const sn=s.snd;setTimeout(()=>snd(sn),/^(call|raise|allin)$/.test(sn)?200:0)}if(sh&&(!P||P.stage!='show'))setTimeout(()=>snd('win'),500);if(my&&(!P||P.turn!=s.turn)){snd('turn');if(vib&&navigator.vibrate)navigator.vibrate(180)}}
 let wl;async function lock(){try{if(navigator.wakeLock&&!document.hidden)wl=await navigator.wakeLock.request('screen')}catch(e){}}
@@ -480,3 +499,4 @@ const steps=['Mélange du paquet…','Pose des jetons…','Préparation de la ta
 const tick=now=>{const t=now-t0;chk();const ready=(fonts&&peerOk)||t>5000,p=Math.min(t/2400,ready?1:.88);$('#spi').style.width=p*100+'%';$('#spt').textContent=steps[Math.min(2,p*3|0)];
 if(p>=1){$('#spt').textContent='Prêt';setTimeout(()=>{el.classList.add('out');document.body.classList.remove('mw');setTimeout(()=>el.remove(),700)},350);return}requestAnimationFrame(tick)};requestAnimationFrame(tick);})();
 </script></body></html>
+
