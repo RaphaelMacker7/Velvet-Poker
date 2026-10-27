@@ -361,6 +361,10 @@ html.hc .s.f,html.hc #dock.f .hc{opacity:.7}
 #upd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:110;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 18px;border-radius:30px;background:#0b1013f5;border:1px solid var(--gold);box-shadow:0 0 26px #d8b46a55,0 10px 24px #000a;font:600 13px Outfit;color:var(--gold2);white-space:nowrap;animation:up .4s both}
 #upd button{padding:9px 16px;font-size:13px}
 body.game #upd{bottom:auto;top:calc(60px + env(safe-area-inset-top,0px))}
+/* plein écran iPhone : la table couvre aussi la zone sous la barre d'état */
+html{background-color:#0b1412}
+body.game{height:auto!important;bottom:0}
+body.game::before{content:'';position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:#0d1815;pointer-events:none}
 </style></head><body><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -686,7 +690,7 @@ b.appendChild(qc);b.appendChild(qp);
 qc.onclick=e=>{e.stopPropagation();qp.classList.toggle('o')};
 qp.onclick=e=>{e.stopPropagation();if(e.target.closest('#awy')){qp.classList.remove('o');return setAway(1)}if(e.target.closest('#pzb')){qp.classList.remove('o');return togglePause()}const x=e.target.closest('button[data-i]');if(!x)return;qp.classList.remove('o');sendChat(+x.dataset.i)};document.addEventListener('visibilitychange',()=>{if(!document.hidden)document.title='Velvet Poker'});
 document.addEventListener('click',()=>qp.classList.remove('o'));
-const BUILD='2026-10-27-3',hadCtl=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);
+const BUILD='2026-10-27-4',hadCtl=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);
 function showUpd(){if(document.getElementById('upd'))return;const d=document.createElement('div');d.id='upd';d.innerHTML='<span>Nouvelle version disponible</span><button>Actualiser</button>';document.body.appendChild(d);d.querySelector('button').onclick=()=>{if(document.body.classList.contains('game')){toast('Partie en cours','Actualisez une fois la partie terminée','⏳');return}location.reload()}}
 async function chkUpd(){try{const r=await fetch(location.href.split('#')[0],{cache:'no-store'}),t=await r.text(),m=/BUILD\s*=\s*'(\d{4}[^']*)'/.exec(t);if(m&&m[1]!==BUILD)showUpd()}catch(e){}}
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(r=>{setInterval(()=>r.update().catch(()=>{}),30*60*1000)}).catch(()=>{});setTimeout(chkUpd,8000)});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadCtl)showUpd()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)chkUpd()});setInterval(chkUpd,20*60*1000)}
