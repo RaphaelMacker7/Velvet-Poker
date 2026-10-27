@@ -1,5 +1,5 @@
 /* Velvet Poker : service worker (installation + chargement hors ligne de l'interface) */
-const V='velvet-v3',CORE=['./','index.html','manifest.webmanifest','icon-512.png','apple-touch-icon.png','favicon-48.png'];
+const V='velvet-v4',CORE=['./','index.html','manifest.webmanifest','icon-512.png','apple-touch-icon.png','favicon-48.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
@@ -15,3 +15,4 @@ self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(r,{ignoreSearch:same}).then(h=>{
     const n=fetch(r).then(x=>{if(x&&(x.ok||x.type==='opaque')){const cp=x.clone();caches.open(V).then(c=>c.put(r,cp))}return x}).catch(()=>h);
     return h||n}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(l=>{for(const c of l){if('focus' in c)return c.focus()}return self.clients.openWindow('./')}))});
