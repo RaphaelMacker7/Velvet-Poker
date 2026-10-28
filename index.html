@@ -366,10 +366,9 @@ html{background-color:#0b1412}
 body.game{height:auto!important;bottom:0}
 body.game::before{content:'';position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:#0d1815;pointer-events:none}
 
-/* iOS plein écran : le menu d'accueil s'arrêtait avant le bas de l'écran -> on le rallonge de l'écart mesuré */
+/* iOS plein écran : on recale la barre du bas sur le vrai bas de l'écran */
 :root{--g:0px}
-.menu.nosc{bottom:calc(0px - var(--g))}
-html:has(.menu.nosc),html:has(.menu.nosc) body{bottom:calc(0px - var(--g));height:calc(100% + var(--g))}
+.tabbar{bottom:calc(0px - var(--g))}
 </style></head><body><div id="app"></div>
 <script>
 const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -712,7 +711,7 @@ const steps=['Mélange du paquet…','Pose des jetons…','Préparation de la ta
 const tick=now=>{const t=now-t0;chk();const ready=(fonts&&peerOk)||t>5000,p=Math.min(t/2400,ready?1:.88);$('#spi').style.width=p*100+'%';$('#spt').textContent=steps[Math.min(2,p*3|0)];
 if(p>=1){$('#spt').textContent='Prêt';setTimeout(()=>{el.classList.add('out');document.body.classList.remove('mw');setTimeout(()=>el.remove(),700)},350);return}requestAnimationFrame(tick)};requestAnimationFrame(tick);})();
 
-/* mesure l'écart entre le bas du menu d'accueil et le bas réel de l'écran (mode app iPhone) */
-(function(){let b=0;const r=document.documentElement;function g(){if(b)return;b=1;try{const m=document.querySelector('.menu.nosc'),st=matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(!m||!st||innerWidth>innerHeight){r.style.setProperty('--g','0px');return}r.style.setProperty('--g','0px');const d=Math.round(screen.height-m.getBoundingClientRect().bottom);r.style.setProperty('--g',(d>8&&d<120?d:0)+'px')}catch(e){}finally{b=0}}
-addEventListener('resize',g);addEventListener('orientationchange',()=>setTimeout(g,400));addEventListener('pageshow',g);const a=document.getElementById('app')||document.body;new MutationObserver(()=>requestAnimationFrame(g)).observe(a,{childList:true});setTimeout(g,300);setTimeout(g,1200)})();
+/* mesure l'écart entre le bas de la barre d'onglets et le bas réel de l'écran (mode app iPhone) */
+(function(){let b=0;const r=document.documentElement;function g(){if(b)return;b=1;try{const t=document.querySelector('.tabbar'),st=matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(!t||!st||innerWidth>innerHeight)return;r.style.setProperty('--g','0px');const d=Math.round(screen.height-t.getBoundingClientRect().bottom);if(d>8&&d<120)r.style.setProperty('--g',d+'px')}catch(e){}finally{b=0}}
+addEventListener('resize',g);addEventListener('orientationchange',()=>setTimeout(g,400));addEventListener('pageshow',g);const a=document.getElementById('app')||document.body;new MutationObserver(()=>requestAnimationFrame(g)).observe(a,{childList:true,subtree:true});setTimeout(g,300);setTimeout(g,1200)})();
 </script></body></html>
